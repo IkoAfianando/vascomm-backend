@@ -1,4 +1,5 @@
 import {prismaClient} from "../application/database.js";
+import jwt from "jsonwebtoken";
 
 export const authMiddleware = async (req, res, next) => {
     const token = req.get('X-API-TOKEN');
@@ -7,11 +8,12 @@ export const authMiddleware = async (req, res, next) => {
             errors: "Unauthorized"
         }).end();
     } else {
-        const user = await prismaClient.user.findFirst({
+        const user = await prismaClient.m_user.findFirst({
             where: {
                 access_token: token
             }
         });
+
         if (!user) {
             res.status(401).json({
                 errors: "Unauthorized"

@@ -10,13 +10,44 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  username         String  @id @db.VarChar(100)
-  password         String  @db.VarChar(100)
-  name             String  @db.VarChar(100)
-  access_token     String? @db.VarChar(100)
-  refresh_token    String? @db.VarChar(100)
-  token_expired_at BigInt
-  
-  @@map("users")
+model m_user {
+  user_id          String   @id @default(cuid()) @map("user_id") @db.VarChar(50)
+  name             String   @db.VarChar(100)
+  email            String   @unique @db.VarChar(100)
+  role             UserRole
+  password         String   @db.VarChar(100)
+  access_token     String?  @unique @db.VarChar(300)
+  refresh_token    String?  @unique @db.VarChar(300)
+  token_expired_at BigInt?
+  created_at       DateTime @default(now()) @map("created_at")
+  updated_at       DateTime @default(now()) @updatedAt @map("updated_at")
+
+  m_product_created m_product[] @relation("CreatedBy")
+  m_product_updated m_product[] @relation("UpdatedBy")
+  m_product_deleted m_product[] @relation("DeletedBy")
+
+  @@map("m_users")
+}
+
+model m_product {
+  product_id      String    @id @default(cuid()) @map("product_id") @db.VarChar(50)
+  product_name    String
+  price           Int
+  stock           Int
+  created_at      DateTime  @default(now()) @map("created_at")
+  created_by      String
+  updated_at      DateTime  @default(now()) @updatedAt @map("updated_at")
+  updated_by      String
+  deleted_at      DateTime?
+  deleted_by      String?
+  created_by_user m_user    @relation("CreatedBy", fields: [created_by], references: [user_id])
+  updated_by_user m_user    @relation("UpdatedBy", fields: [updated_by], references: [user_id])
+  deleted_by_user m_user?   @relation("DeletedBy", fields: [deleted_by], references: [user_id])
+
+  @@map("m_products")
+}
+
+enum UserRole {
+  ADMIN
+  USER
 }

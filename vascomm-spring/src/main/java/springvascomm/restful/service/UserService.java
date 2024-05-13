@@ -39,6 +39,7 @@ public class UserService {
     user.setEmail(request.getEmail());
     user.setPassword(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
     user.setName(request.getName());
+    user.setRole(User.RoleType.valueOf(request.getRole()));
 
     userRepository.save(user);
   }

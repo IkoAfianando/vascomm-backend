@@ -13,15 +13,24 @@ import lombok.NoArgsConstructor;
 @Builder
 public class RegisterUserRequest {
 
-    @NotBlank
-    @Size(max = 100)
-    private String email;
+  @NotBlank
+  @Size(max = 100)
+  private String email;
 
-    @NotBlank
-    @Size(max = 100)
-    private String password;
+  @NotBlank
+  @Size(max = 100)
+  private String role = RoleType.USER.toString();
 
-    @NotBlank
-    @Size(max = 100)
-    private String name;
+  public enum RoleType {
+    ADMIN,
+    USER
+  }
+
+  @NotBlank
+  @Size(max = 100)
+  private String password;
+
+  @NotBlank
+  @Size(max = 100)
+  private String name;
 }

@@ -8,11 +8,13 @@ public class JwtUtil {
 
   private static final long EXPIRATION_TIME = 3_600_000; // 1 hours
   private static final long REFRESH_EXPIRATION_TIME = 86_400_000; // 1 days
+
   public static String accessToken(String username) {
+    System.out.println(SECRET);
     return Jwts.builder()
       .setSubject(username)
       .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-      .signWith(SignatureAlgorithm.HS512, SECRET)
+      .signWith(SignatureAlgorithm.HS256, SECRET)
       .compact();
   }
 
@@ -20,7 +22,7 @@ public class JwtUtil {
     return Jwts.builder()
       .setSubject(username)
       .setExpiration(new Date(System.currentTimeMillis() + REFRESH_EXPIRATION_TIME))
-      .signWith(SignatureAlgorithm.HS512, SECRET)
+      .signWith(SignatureAlgorithm.HS256, SECRET)
       .compact();
   }
   public static boolean validateToken(String token) {
